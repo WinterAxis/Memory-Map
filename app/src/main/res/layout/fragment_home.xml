@@ -22,9 +22,15 @@
         android:id="@+id/newmap"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginStart="75dp"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="75dp"
+        android:layout_marginRight="75dp"
         android:text="Begin a New Map"
-        app:layout_constraintTop_toBottomOf="@id/welcome"
-        android:layout_marginTop="100dp" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/welcome" />
 
     <Button
         android:id="@+id/oldmap"
@@ -32,6 +38,10 @@
         android:layout_height="wrap_content"
         android:text="Load A Saved Map"
         app:layout_constraintTop_toBottomOf="@id/newmap"
-        android:layout_marginTop="100dp"/>
+        android:layout_marginStart="75dp"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="100dp"
+        android:layout_marginEnd="75dp"
+        android:layout_marginRight="75dp"/>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
