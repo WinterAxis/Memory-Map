@@ -2,7 +2,8 @@
     <string name="app_name">Memory Map</string>
     <string name="title_home">Home</string>
     <string name="title_map_list">List</string>
-    <string name="title_map_editor">Editor</string>
+    <string name="title_map_editor">Edditor</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="welcome_msg">Welcome to Memory Map!</string>
 </resources>

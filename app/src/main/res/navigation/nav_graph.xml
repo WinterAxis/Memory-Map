@@ -9,7 +9,14 @@
         android:id="@+id/navigation_home"
         android:name="com.zybooks.memorymap.HomeFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_home" />
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_map_editor"
+            app:destination="@id/navigation_map_editor" />
+        <action
+            android:id="@+id/action_navigation_home_to_navigation_map_list"
+            app:destination="@id/navigation_map_list" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_map_list"

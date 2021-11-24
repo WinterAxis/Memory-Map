@@ -1,64 +1,75 @@
 package com.zybooks.memorymap;
 
+import android.graphics.Bitmap;
+import android.graphics.ImageDecoder;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 
+import android.os.Parcelable;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.Toast;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MapEditorFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.io.IOException;
+import java.util.ArrayList;
+
+
 public class MapEditorFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private Uri uri = null;
+    public static final String ARG_MAP_URI = "map_uri";
 
     public MapEditorFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapEditorFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MapEditorFragment newInstance(String param1, String param2) {
-        MapEditorFragment fragment = new MapEditorFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        Bundle args = getArguments();
+
+        if (args != null) {
+            ArrayList<Parcelable> uris = args.getParcelableArrayList(ARG_MAP_URI);
+            for (Parcelable p : uris) {
+                uri = (Uri) p;
+            }
+            Log.d("TAG", "onCreate: before changeMapImg");
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    private void changeMapImg(View v,Uri uri) {
+        Log.d("TAG", "changeMapImg: enter: "+uri);
+        try {
+            ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), uri);
+            Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+            ImageView imageView = (ImageView) v.findViewById(R.id.map_image);
+
+//            imageView.setImageBitmap(bitmap);
+        } catch (IOException e) {
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_editor, container, false);
+        View root = inflater.inflate(R.layout.fragment_map_editor, container, false);
+        ImageView imageView = (ImageView) root.findViewById(R.id.map_image);
+        imageView.setImageURI(uri);
+        changeMapImg(root, uri);
+        return root;
     }
+
+
 }
