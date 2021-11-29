@@ -5,9 +5,18 @@
       <map>
         <entry key="..\:/GitHub/Memory-Map/app/src/main/res/drawable/custom_button.xml" value="0.33897435897435896" />
         <entry key="..\:/GitHub/Memory-Map/app/src/main/res/layout/activity_main.xml" value="0.17314814814814813" />
+<<<<<<< Updated upstream
         <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/layout/activity_main.xml" value="0.1" />
         <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/layout/fragment_map_editor.xml" value="0.13020833333333334" />
+=======
+        <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/drawable/home_icon.xml" value="0.12708333333333333" />
+        <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/drawable/map_editor_icon.xml" value="0.19114583333333332" />
+        <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/drawable/map_list_icon.xml" value="0.12708333333333333" />
+        <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/layout/activity_main.xml" value="0.176" />
+        <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/layout/fragment_home.xml" value="0.1" />
+        <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/layout/fragment_map_editor.xml" value="0.264" />
+>>>>>>> Stashed changes
         <entry key="..\:/Users/yoyox/Documents/GitHub/Memory-Map/app/src/main/res/menu/bottom_nav_menu.xml" value="0.13020833333333334" />
       </map>
     </option>

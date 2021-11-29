@@ -9,6 +9,35 @@
     <TextView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+<<<<<<< Updated upstream
         android:text="@string/hello_blank_fragment" />
+=======
+        android:src="@drawable/map_editor_icon"/>
+
+    <ImageView
+        android:id="@+id/temp"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginStart="142dp"
+        android:layout_marginLeft="142dp"
+        android:layout_marginTop="148dp"
+        android:src="@android:drawable/ic_menu_myplaces"
+        app:layout_constraintStart_toStartOf="@id/map_image1"
+        app:layout_constraintTop_toTopOf="@id/map_image1" />
+
+
+<!--    Move button to actual position -->
+    <Button
+        android:id="@+id/set_map"
+        android:layout_marginStart="142dp"
+        android:layout_marginLeft="142dp"
+        android:layout_marginTop="16dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Set Map"
+        app:layout_constraintStart_toStartOf="@id/map_image1"
+        app:layout_constraintTop_toTopOf="@id/map_image1" />
+
+>>>>>>> Stashed changes
 
 </FrameLayout>
