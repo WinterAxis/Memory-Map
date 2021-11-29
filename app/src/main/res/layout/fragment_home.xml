@@ -6,15 +6,13 @@
     android:layout_height="match_parent"
     tools:context=".MainActivity">
 
-<<<<<<< Updated upstream
-=======
     <ImageView
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:src="@drawable/map_editor_icon"/>
 
->>>>>>> Stashed changes
+
     <TextView
         android:id="@+id/welcome"
         android:layout_width="wrap_content"
@@ -28,7 +26,7 @@
         android:textSize="40sp"/>
 
     <Button
-        android:id="@+id/newmap"
+        android:id="@+id/new_map_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginStart="75dp"
@@ -46,7 +44,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Load A Saved Map"
-        app:layout_constraintTop_toBottomOf="@id/newmap"
+        app:layout_constraintTop_toBottomOf="@id/new_map_button"
         android:layout_marginStart="75dp"
         android:layout_marginLeft="75dp"
         android:layout_marginTop="100dp"
