@@ -1,5 +1,7 @@
 package com.zybooks.memorymap;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import android.graphics.Bitmap;
@@ -29,30 +31,54 @@ import java.io.IOException;
 @RequiresApi(api = Build.VERSION_CODES.P)
 public class MapEditorFragment extends Fragment {
 
-    private LayoutInflater minflater;
+    public static final String ARG_MAP_ID = "map_id";
+
+    private String Map_ID = "Map_0";
+
+    private SharedPreferences map_pref;
 
     public MapEditorFragment() {
         // Required empty public constructor
     }
 
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        Log.d("TAG", "onAttach: "+Map_ID);
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+        Bundle args = getArguments();
+        if (args != null) {
+            Log.d("TAG", "onCreate:Before "+Map_ID);
+            Map_ID = args.getString(ARG_MAP_ID);
+            Log.d("TAG", "onCreate:After "+Map_ID);
+        }
+        map_pref = getContext().getSharedPreferences(Map_ID, 0);
+
     }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        minflater = inflater;
 
         View parentView = inflater.inflate(R.layout.fragment_map_editor, container, false);
 
         Button setMapBtn = parentView.findViewById(R.id.set_map);
         setMapBtn.setOnClickListener(v -> mGetImageContent.launch("image/*"));
 
-        //to be removed later
+        //Load Pins from Preferences
+        SharedPreferences.Editor editor = map_pref.edit();
+        //Name To Be Changed Latter
+        editor.putString("Test", "true");
+        editor.apply();
+        Log.d("TAG", "onCreateView: "+editor);
+
+        //to be removed later just a pin for testing
         ImageView tempPin = parentView.findViewById(R.id.temp);
         tempPin.setOnClickListener(v -> { onButtonShowPopupWindowClick(v); });
 
@@ -78,6 +104,9 @@ public class MapEditorFragment extends Fragment {
         // inflate the layout of the popup window
         LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
         View popupView = inflater.inflate(R.layout.pin_popup_window, null);
+
+        //
+
         // create the popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
@@ -89,7 +118,7 @@ public class MapEditorFragment extends Fragment {
         }
 
         // show the popup window
-        // which view you pass in doesn't matter, it is only used for the window tolken
+        // which view you pass in doesn't matter, it is only used for the window token
         popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         // dismiss the popup window when touched
 //        popupView.setOnTouchListener(new View.OnTouchListener() {

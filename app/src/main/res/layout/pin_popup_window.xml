@@ -5,19 +5,23 @@
     android:layout_height="wrap_content"
     android:background="@color/white">
 
-    <TextView
+    <EditText
         android:id="@+id/band_name"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_margin="30dp"
+        android:importantForAutofill="no"
+        android:inputType="textCapWords"
         android:textSize="30sp"
         android:text="Title"/>
 
-    <TextView
+    <EditText
         android:id="@+id/band_description"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_below="@+id/band_name"
+        android:importantForAutofill="no"
+        android:inputType="textLongMessage"
         android:textSize="20sp"
         android:layout_marginStart="30dp"
         android:layout_marginLeft="30dp"

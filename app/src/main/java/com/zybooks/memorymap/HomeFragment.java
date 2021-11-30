@@ -1,5 +1,7 @@
 package com.zybooks.memorymap;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -19,6 +21,8 @@ import android.widget.Button;
 @RequiresApi(api = Build.VERSION_CODES.P)
 public class HomeFragment extends Fragment {
 
+    private SharedPreferences maps_pref;
+
     public HomeFragment() {
         // Required empty public constructor
     }
@@ -27,6 +31,12 @@ public class HomeFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        maps_pref = context.getSharedPreferences("maps_pref", 0);
     }
 
     public View onCreateView(@NonNull LayoutInflater inflater,
@@ -48,7 +58,18 @@ public class HomeFragment extends Fragment {
 
     private void newMap(View view) {
         Log.d("Event", "newMap: Here");
-        Navigation.findNavController(view).navigate(R.id.navigation_map_editor);
+        int Map_Id = maps_pref.getInt("Next_Map_Id", 0);
+        SharedPreferences.Editor editor = maps_pref.edit();
+        //Name To Be Changed Latter
+        editor.putString("Map_"+Map_Id+"_Name", "Unnamed_Map");
+        editor.putInt("Next_Map_Id", Map_Id+1);
+        editor.apply();
+
+        Bundle args = new Bundle();
+        Log.d("TAGGGGG", "newMap: "+Map_Id);
+        args.putString(MapEditorFragment.ARG_MAP_ID, "Map_"+Map_Id);
+
+        Navigation.findNavController(view).navigate(R.id.navigation_map_editor, args);
     }
 
 }
