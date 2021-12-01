@@ -34,7 +34,7 @@ public class HomeFragment extends Fragment {
     }
 
     @Override
-    public void onAttach(Context context) {
+    public void onAttach(@NonNull Context context) {
         super.onAttach(context);
         maps_pref = context.getSharedPreferences("maps_pref", 0);
     }
@@ -66,7 +66,7 @@ public class HomeFragment extends Fragment {
         editor.apply();
 
         Bundle args = new Bundle();
-        Log.d("TAGGGGG", "newMap: "+Map_Id);
+        Log.d("TAG", "newMap: "+Map_Id);
         args.putString(MapEditorFragment.ARG_MAP_ID, "Map_"+Map_Id);
 
         Navigation.findNavController(view).navigate(R.id.navigation_map_editor, args);

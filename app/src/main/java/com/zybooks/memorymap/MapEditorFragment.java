@@ -1,8 +1,7 @@
 package com.zybooks.memorymap;
 
-import android.content.Context;
 import android.content.SharedPreferences;
-import android.graphics.Color;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.graphics.Bitmap;
@@ -16,14 +15,12 @@ import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.constraintlayout.widget.ConstraintSet;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
-import androidx.navigation.Navigation;
 
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -42,17 +39,15 @@ public class MapEditorFragment extends Fragment {
 
     public static final String ARG_MAP_ID = "map_id";
 
+    public static final String PREF_IMG_URI = "img_uri";
+
     private String Map_ID = "Map_0";
 
     private SharedPreferences map_pref;
+    private ImageView map_image_view;
 
     public MapEditorFragment() {
         // Required empty public constructor
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
     }
 
     @Override
@@ -69,13 +64,13 @@ public class MapEditorFragment extends Fragment {
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View parentView = inflater.inflate(R.layout.fragment_map_editor, container, false);
         ConstraintLayout parentLayout  = (ConstraintLayout) parentView.findViewById(R.id.ConstraintLayout_map_editor);
         ConstraintSet conSet = new ConstraintSet();
 
+        map_image_view = parentView.findViewById(R.id.map_image);
 
         Button setMapBtn = parentView.findViewById(R.id.set_map);
         setMapBtn.setOnClickListener(v -> mGetImageContent.launch("image/*"));
@@ -85,7 +80,6 @@ public class MapEditorFragment extends Fragment {
         Set<String> set = new HashSet<String>();
         set.add("pin1");
         set.add("pin2");
-//        set.add("pin3");
         editor.putStringSet("Pins", set);
         editor.putInt("pin1_marginStart", 200);
         editor.putInt("pin1_marginTop", 300);
@@ -100,10 +94,12 @@ public class MapEditorFragment extends Fragment {
         editor.putInt("Next_Pin_Id", 4);
         editor.apply();
 
-        ImageView mapImg = getActivity().findViewById(R.id.map_image);
-
         //Retrieve the values
         Set<String> pins = map_pref.getStringSet("Pins", null);
+        String map_uri_str = map_pref.getString(PREF_IMG_URI, null);
+        if (map_uri_str != null) {
+            setImg(Uri.parse(map_uri_str));
+        }
 
         //Load Pins
         for (String pin : pins){
@@ -171,8 +167,7 @@ public class MapEditorFragment extends Fragment {
         // create the popup window
         int width = LinearLayout.LayoutParams.WRAP_CONTENT;
         int height = LinearLayout.LayoutParams.WRAP_CONTENT;
-        boolean focusable = true; // lets taps outside the popup also dismiss it
-        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, focusable);
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             popupWindow.setElevation(20);
@@ -194,14 +189,22 @@ public class MapEditorFragment extends Fragment {
     private final ActivityResultLauncher<String> mGetImageContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
             uri -> {
-                try {
-                    ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), uri);
-                    Bitmap bitmap = ImageDecoder.decodeBitmap(source);
-                    ImageView imageView = getActivity().findViewById(R.id.map_image);
-                    imageView.setImageBitmap(bitmap);
-                } catch (IOException e) {
+                setImg(uri);
+                SharedPreferences.Editor editor = map_pref.edit();
+                editor.putString(PREF_IMG_URI, uri.toString());
+                editor.apply();
 
-                }
             }
     );
+
+    private void setImg(Uri uri) {
+        try {
+            ImageDecoder.Source source = ImageDecoder.createSource(getActivity().getContentResolver(), uri);
+            Bitmap bitmap = ImageDecoder.decodeBitmap(source);
+            map_image_view.setImageBitmap(bitmap);
+        } catch (IOException e) {
+
+        }
+    }
+
 }
