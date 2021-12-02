@@ -1,5 +1,6 @@
 package com.zybooks.memorymap;
 
+import android.content.ClipData;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
@@ -19,8 +20,13 @@ import androidx.fragment.app.Fragment;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -41,10 +47,11 @@ public class MapEditorFragment extends Fragment {
 
     public static final String PREF_IMG_URI = "img_uri";
 
+    private ConstraintLayout parentLayout;
     private String Map_ID = "Map_0";
-
     private SharedPreferences map_pref;
     private ImageView map_image_view;
+    private ImageView pin_drop_view;
 
     public MapEditorFragment() {
         // Required empty public constructor
@@ -53,7 +60,7 @@ public class MapEditorFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
+        setHasOptionsMenu(true);
         Bundle args = getArguments();
         if (args != null) {
             Map_ID = args.getString(ARG_MAP_ID);
@@ -67,62 +74,28 @@ public class MapEditorFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         View parentView = inflater.inflate(R.layout.fragment_map_editor, container, false);
-        ConstraintLayout parentLayout  = (ConstraintLayout) parentView.findViewById(R.id.ConstraintLayout_map_editor);
-        ConstraintSet conSet = new ConstraintSet();
+        parentLayout  = (ConstraintLayout) parentView.findViewById(R.id.ConstraintLayout_map_editor);
 
         map_image_view = parentView.findViewById(R.id.map_image);
+        map_image_view.setOnDragListener(new MyDragListener());
 
         Button setMapBtn = parentView.findViewById(R.id.set_map);
         setMapBtn.setOnClickListener(v -> mGetImageContent.launch("image/*"));
 
-        //add some pins to test delete later
         SharedPreferences.Editor editor = map_pref.edit();
-        Set<String> set = new HashSet<String>();
-        set.add("pin1");
-        set.add("pin2");
-        editor.putStringSet("Pins", set);
-        editor.putInt("pin1_marginStart", 200);
-        editor.putInt("pin1_marginTop", 300);
-        editor.putString("pin1_Title", "Test1");
-        editor.putString("pin1_Description", "Should load this");
-
-        editor.putInt("pin2_marginStart", 400);
-        editor.putInt("pin2_marginTop", 500);
-        editor.putString("pin2_Title", "Test2");
-        editor.putString("pin2_Description", "Description");
-        
-        editor.putInt("Next_Pin_Id", 4);
+        if (map_pref.getInt("Next_Pin_Id", 0) == 0) {
+            editor.putInt("Next_Pin_Id", 1);
+            Set<String> set = new HashSet<String>();
+            editor.putStringSet("Pins", set);
+        }
         editor.apply();
 
         //Retrieve the values
-        Set<String> pins = map_pref.getStringSet("Pins", null);
         String map_uri_str = map_pref.getString(PREF_IMG_URI, null);
         if (map_uri_str != null) {
             setImg(Uri.parse(map_uri_str));
         }
-
-        //Load Pins
-        for (String pin : pins){
-
-            Log.d("TAG", "onCreateView: "+pin);
-            ImageView newPin = new ImageView(getContext());
-            newPin.setId(View.generateViewId());
-            newPin.setImageResource(R.drawable.pin_place);
-            newPin.setColorFilter(ContextCompat.getColor(getContext(), R.color.blue));
-            newPin.setTag(pin);
-            newPin.setElevation(10);
-
-            newPin.setOnClickListener(v -> { onButtonShowPopupWindowClick(v); });
-
-            parentLayout.addView(newPin, 0);
-
-            conSet.clone(parentLayout);
-
-            // connect start and end point of views, in this case top of child to top of parent.
-            conSet.connect(newPin.getId(), ConstraintSet.TOP, parentLayout.getId(), ConstraintSet.TOP, map_pref.getInt(pin+"_marginTop", 0));
-            conSet.connect(newPin.getId(), ConstraintSet.START, parentLayout.getId(), ConstraintSet.START, map_pref.getInt(pin+"_marginStart", 0));
-            conSet.applyTo(parentLayout);
-        }
+        loadPins();
 
         //to be removed later just a pin for testing
 //        ImageView tempPin = parentView.findViewById(R.id.temp);
@@ -130,6 +103,24 @@ public class MapEditorFragment extends Fragment {
 
         return parentView;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        Log.d("TAG", "onCreateOptionsMenu: ");
+        inflater.inflate(R.menu.appbar_menu, menu);
+        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService
+                (getContext().LAYOUT_INFLATER_SERVICE);
+        View sampleActionView = layoutInflater.inflate(R.layout.sample_action_view, null);
+        MenuItem searchMenuItem = menu.findItem(R.id.action_pin);
+        searchMenuItem.setActionView(sampleActionView);
+        sampleActionView.setOnTouchListener(new MyTouchListener());
+        sampleActionView.setOnDragListener(new MyDragListener());
+        pin_drop_view = sampleActionView.findViewById(R.id.mobile_link_action_bar_button);
+        pin_drop_view.setImageResource(R.drawable.pin_place);
+
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
 
     public void onButtonShowPopupWindowClick(View view) {
         Log.d("TAG", "onButtonShowPopupWindowClick: "+view.getTag());
@@ -207,4 +198,91 @@ public class MapEditorFragment extends Fragment {
         }
     }
 
+    private final class MyTouchListener implements View.OnTouchListener {
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            if (motionEvent.getAction() == MotionEvent.ACTION_DOWN) {
+                ClipData data = ClipData.newPlainText("", "");
+                View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
+                        view);
+                view.startDrag(data, shadowBuilder, view, 0);
+//                view.setVisibility(View.INVISIBLE);
+                return true;
+            } else {
+                return false;
+            }
+        }
+    }
+
+    class MyDragListener implements View.OnDragListener {
+
+        @Override
+        public boolean onDrag(View v, DragEvent event) {
+            int action = event.getAction();
+            switch (event.getAction()) {
+                case DragEvent.ACTION_DRAG_STARTED:
+                    // do nothing
+                    break;
+                case DragEvent.ACTION_DRAG_ENTERED:
+                    break;
+                case DragEvent.ACTION_DRAG_EXITED:
+                    break;
+                case DragEvent.ACTION_DROP:
+                    Log.d("TAG", "onDrag: Dropped"+event.getX());
+                    Log.d("TAG", "onDrag: Dropped"+event.getY());
+                    addPin(event);
+                    break;
+                case DragEvent.ACTION_DRAG_ENDED:
+                default:
+                    break;
+            }
+            return true;
+        }
+    }
+
+    private void addPin(DragEvent event) {
+        SharedPreferences.Editor editor = map_pref.edit();
+        int id = map_pref.getInt("Next_Pin_Id", 0);
+        String pin_id = "pin"+id;
+        editor.putInt("Next_Pin_Id", id+1);
+        Set<String> newSet = new HashSet<String>(map_pref.getStringSet("Pins", new HashSet<String>()));
+        newSet.add(pin_id);
+        editor.putStringSet("Pins", newSet);
+        editor.putInt(pin_id+"_marginStart", (int) event.getX()-60);
+        editor.putInt(pin_id+"_marginTop", (int) event.getY()-60);
+        editor.putString(pin_id+"_Title", "Title");
+        editor.putString(pin_id+"_Description", "Description");
+        editor.apply();
+        loadPins();
+
+    }
+
+    private void loadPins() {
+        Set<String> pins = map_pref.getStringSet("Pins", null);
+        for (String pin : pins) {
+            parentLayout.removeView(parentLayout.findViewWithTag(pin));
+        }
+        ConstraintSet conSet = new ConstraintSet();
+        for (String pin : pins){
+
+            Log.d("TAG", "onCreateView: "+pin);
+            ImageView newPin = new ImageView(getContext());
+            newPin.setId(View.generateViewId());
+            newPin.setImageResource(R.drawable.pin_place);
+            newPin.setColorFilter(ContextCompat.getColor(getContext(), R.color.blue));
+            newPin.setTag(pin);
+            newPin.setElevation(10);
+
+            newPin.setOnClickListener(v -> { onButtonShowPopupWindowClick(v); });
+
+            parentLayout.addView(newPin, 0);
+
+            conSet.clone(parentLayout);
+
+            // connect start and end point of views, in this case top of child to top of parent.
+            conSet.connect(newPin.getId(), ConstraintSet.TOP, parentLayout.getId(), ConstraintSet.TOP, map_pref.getInt(pin+"_marginTop", 0));
+            conSet.connect(newPin.getId(), ConstraintSet.START, parentLayout.getId(), ConstraintSet.START, map_pref.getInt(pin+"_marginStart", 0));
+            conSet.applyTo(parentLayout);
+        }
+
+    }
 }
