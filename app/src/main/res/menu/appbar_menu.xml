@@ -1,8 +1,16 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item android:id="@+id/action_set_map"
+        android:title="Set Map"
+        android:icon="@drawable/map_image_icon"
+        app:showAsAction="ifRoom"/>
+
     <item android:id="@+id/action_pin"
         android:title="Place Pin"
         android:icon="@drawable/pin_place"
         app:showAsAction="always"/>
-
+    <item android:id="@+id/action_set_pin_icon"
+        android:title="Set Pin Icon"
+        android:icon="@drawable/map_pin_edit_icon"
+        app:showAsAction="ifRoom"/>
 </menu>

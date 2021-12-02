@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:useDefaultMargins="true"
+    android:columnCount="4"
+    android:background="@color/white">
+    <ImageView
+        android:id="@+id/icon_pin_place"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_place"
+        app:tint="@color/black"
+        android:tag="pin_place"/>
+
+    <ImageView
+        android:id="@+id/icon_pin_airport"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_airport"
+        app:tint="@color/black"
+        android:tag="pin_airport" />
+    <ImageView
+        android:id="@+id/icon_pin_atm"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_atm"
+        app:tint="@color/black"
+        android:tag="pin_atm"/>
+
+    <ImageView
+        android:id="@+id/icon_pin_bakery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_bakery"
+        app:tint="@color/black"
+        android:tag="pin_bakery" />
+
+    <ImageView
+        android:id="@+id/icon_pin_boats"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_boats"
+        app:tint="@color/black"
+        android:tag="pin_boats" />
+    <ImageView
+        android:id="@+id/icon_pin_building"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_building"
+        app:tint="@color/black"
+        android:tag="pin_building" />
+    <ImageView
+        android:id="@+id/icon_pin_bus_stop"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_bus_stop"
+        app:tint="@color/black"
+        android:tag="pin_bus_stop" />
+    <ImageView
+        android:id="@+id/icon_pin_car_rental"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_car_rental"
+        app:tint="@color/black"
+        android:tag="pin_car_rental" />
+    <ImageView
+        android:id="@+id/icon_pin_church"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_church"
+        app:tint="@color/black"
+        android:tag="pin_church" />
+    <ImageView
+        android:id="@+id/icon_pin_restaurant"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_restaurant"
+        app:tint="@color/black"
+        android:tag="pin_restaurant" />
+    <ImageView
+        android:id="@+id/icon_pin_subway"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_subway"
+        app:tint="@color/black"
+        android:tag="pin_subway" />
+    <ImageView
+        android:id="@+id/icon_pin_work"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:src="@drawable/pin_work"
+        app:tint="@color/black"
+        android:tag="pin_work" />
+
+
+</GridLayout>

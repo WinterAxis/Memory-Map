@@ -25,8 +25,7 @@ public class MainActivity extends AppCompatActivity {
         // Save values in map_pref.xml
         SharedPreferences namedSharedPref = getSharedPreferences("maps_pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = namedSharedPref.edit();
-        editor.putString("Map_1_Name", "Temp_Map");
-        editor.putInt("Next_Map_Id", 2);
+        editor.putInt("Next_Map_Id", 1);
         editor.apply();
 
 

@@ -2,6 +2,7 @@ package com.zybooks.memorymap;
 
 import android.content.ClipData;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.net.Uri;
 import android.os.Bundle;
 
@@ -31,6 +32,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.GridLayout;
+import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -79,9 +82,6 @@ public class MapEditorFragment extends Fragment {
         map_image_view = parentView.findViewById(R.id.map_image);
         map_image_view.setOnDragListener(new MyDragListener());
 
-        Button setMapBtn = parentView.findViewById(R.id.set_map);
-        setMapBtn.setOnClickListener(v -> mGetImageContent.launch("image/*"));
-
         SharedPreferences.Editor editor = map_pref.edit();
         if (map_pref.getInt("Next_Pin_Id", 0) == 0) {
             editor.putInt("Next_Pin_Id", 1);
@@ -90,16 +90,13 @@ public class MapEditorFragment extends Fragment {
         }
         editor.apply();
 
-        //Retrieve the values
+        //Sets Map Image
         String map_uri_str = map_pref.getString(PREF_IMG_URI, null);
         if (map_uri_str != null) {
             setImg(Uri.parse(map_uri_str));
         }
-        loadPins();
 
-        //to be removed later just a pin for testing
-//        ImageView tempPin = parentView.findViewById(R.id.temp);
-//        tempPin.setOnClickListener(v -> { onButtonShowPopupWindowClick(v); });
+        loadPins();
 
         return parentView;
     }
@@ -108,22 +105,38 @@ public class MapEditorFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         Log.d("TAG", "onCreateOptionsMenu: ");
         inflater.inflate(R.menu.appbar_menu, menu);
-        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService
-                (getContext().LAYOUT_INFLATER_SERVICE);
+        LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService (getContext().LAYOUT_INFLATER_SERVICE);
         View sampleActionView = layoutInflater.inflate(R.layout.sample_action_view, null);
         MenuItem searchMenuItem = menu.findItem(R.id.action_pin);
         searchMenuItem.setActionView(sampleActionView);
         sampleActionView.setOnTouchListener(new MyTouchListener());
         sampleActionView.setOnDragListener(new MyDragListener());
         pin_drop_view = sampleActionView.findViewById(R.id.mobile_link_action_bar_button);
+        //Lines needed to change pin_drop images
         pin_drop_view.setImageResource(R.drawable.pin_place);
+        pin_drop_view.setTag("pin_place");
 
         super.onCreateOptionsMenu(menu, inflater);
     }
 
+    @Override
+    public boolean onOptionsItemSelected(MenuItem menuItem) {
+        switch (menuItem.getItemId()) {
+            case R.id.action_set_map:
+                if (menuItem.getItemId() == R.id.action_set_map)
+                    mGetImageContent.launch("image/*");
+                return true;
+            case R.id.action_set_pin_icon:
+                if (menuItem.getItemId() == R.id.action_set_pin_icon)
+                    showIconPopup();
+                return true;
 
-    public void onButtonShowPopupWindowClick(View view) {
-        Log.d("TAG", "onButtonShowPopupWindowClick: "+view.getTag());
+        }
+        return false;
+    }
+
+    public void onClickPinPopup(View view) {
+        Log.d("TAG", "onClickPinPopup: "+view.getTag());
         String pin = (String) view.getTag();
 
         // inflate the layout of the popup window
@@ -165,7 +178,7 @@ public class MapEditorFragment extends Fragment {
         }
 
         // show the popup window
-        popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
+        popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
         // dismiss the popup window when touched
 //        popupView.setOnTouchListener(new View.OnTouchListener() {
 //            @Override
@@ -174,6 +187,38 @@ public class MapEditorFragment extends Fragment {
 //                return true;
 //            }
 //        });
+    }
+
+    public void showIconPopup() {
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
+        GridLayout popupView = (GridLayout) inflater.inflate(R.layout.icon_popup_window, null);
+
+        // set onClick Listeners
+        Log.d("TAG", "showIconPopup: "+popupView.getChildCount());
+        for(int i = 0; i < popupView.getChildCount(); i++) {
+            ImageView child = (ImageView) popupView.getChildAt(i);
+            child.setOnClickListener(v -> {
+                Resources resources = getContext().getResources();
+                int resourceId = resources.getIdentifier(String.valueOf(v.getTag()), "drawable", getContext().getPackageName());
+                pin_drop_view.setImageResource(resourceId);
+                pin_drop_view.setTag(v.getTag());
+                Log.d("TAG", "showIconPopup: "+v.getTag());
+            });
+            Log.d("TAG", "showIconPopup: ");
+            // do stuff with child view
+        }
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            popupWindow.setElevation(20);
+        }
+        // show the popup window
+        popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
     }
 
     //Gets Image from the gallery and sets it to the map image
@@ -218,22 +263,10 @@ public class MapEditorFragment extends Fragment {
         @Override
         public boolean onDrag(View v, DragEvent event) {
             int action = event.getAction();
-            switch (event.getAction()) {
-                case DragEvent.ACTION_DRAG_STARTED:
-                    // do nothing
-                    break;
-                case DragEvent.ACTION_DRAG_ENTERED:
-                    break;
-                case DragEvent.ACTION_DRAG_EXITED:
-                    break;
-                case DragEvent.ACTION_DROP:
-                    Log.d("TAG", "onDrag: Dropped"+event.getX());
-                    Log.d("TAG", "onDrag: Dropped"+event.getY());
-                    addPin(event);
-                    break;
-                case DragEvent.ACTION_DRAG_ENDED:
-                default:
-                    break;
+            if (event.getAction() == DragEvent.ACTION_DROP) {
+                Log.d("TAG", "onDrag: Dropped" + event.getX());
+                Log.d("TAG", "onDrag: Dropped" + event.getY());
+                addPin(event);
             }
             return true;
         }
@@ -251,6 +284,8 @@ public class MapEditorFragment extends Fragment {
         editor.putInt(pin_id+"_marginTop", (int) event.getY()-60);
         editor.putString(pin_id+"_Title", "Title");
         editor.putString(pin_id+"_Description", "Description");
+        editor.putString(pin_id+"_Image_Name", String.valueOf(pin_drop_view.getTag()));
+        Log.d("TAG", "addPin: "+pin_drop_view.getTag());
         editor.apply();
         loadPins();
 
@@ -267,12 +302,18 @@ public class MapEditorFragment extends Fragment {
             Log.d("TAG", "onCreateView: "+pin);
             ImageView newPin = new ImageView(getContext());
             newPin.setId(View.generateViewId());
-            newPin.setImageResource(R.drawable.pin_place);
+            //Drawable
+            Resources resources = getContext().getResources();
+            String pin_img_name = map_pref.getString(pin+"_Image_Name", "pin_place");
+            int resourceId = resources.getIdentifier(pin_img_name, "drawable", getContext().getPackageName());
+            newPin.setImageResource(resourceId);
+            Log.d("TAG", "loadPins: "+R.drawable.pin_atm);
+            Log.d("TAG", "loadPins: "+resourceId);
             newPin.setColorFilter(ContextCompat.getColor(getContext(), R.color.blue));
             newPin.setTag(pin);
             newPin.setElevation(10);
 
-            newPin.setOnClickListener(v -> { onButtonShowPopupWindowClick(v); });
+            newPin.setOnClickListener(v -> { onClickPinPopup(v); });
 
             parentLayout.addView(newPin, 0);
 
