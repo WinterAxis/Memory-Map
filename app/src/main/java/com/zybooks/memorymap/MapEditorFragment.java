@@ -55,6 +55,7 @@ public class MapEditorFragment extends Fragment {
     private SharedPreferences map_pref;
     private ImageView map_image_view;
     private ImageView pin_drop_view;
+    private int colorId;
 
     public MapEditorFragment() {
         // Required empty public constructor
@@ -115,6 +116,8 @@ public class MapEditorFragment extends Fragment {
         //Lines needed to change pin_drop images
         pin_drop_view.setImageResource(R.drawable.pin_place);
         pin_drop_view.setTag("pin_place");
+        Resources resources = getContext().getResources();
+        colorId = resources.getIdentifier("white", "color", getContext().getPackageName());
 
         super.onCreateOptionsMenu(menu, inflater);
     }
@@ -129,6 +132,10 @@ public class MapEditorFragment extends Fragment {
             case R.id.action_set_pin_icon:
                 if (menuItem.getItemId() == R.id.action_set_pin_icon)
                     showIconPopup();
+                return true;
+            case R.id.action_set_pin_color:
+                if (menuItem.getItemId() == R.id.action_set_pin_color)
+                    showColorPopup();
                 return true;
 
         }
@@ -221,6 +228,33 @@ public class MapEditorFragment extends Fragment {
         popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
     }
 
+    public void showColorPopup() {
+        // inflate the layout of the popup window
+        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(getContext().LAYOUT_INFLATER_SERVICE);
+        GridLayout popupView = (GridLayout) inflater.inflate(R.layout.color_popup_window, null);
+
+        // set onClick Listeners
+        for(int i = 0; i < popupView.getChildCount(); i++) {
+            ImageView child = (ImageView) popupView.getChildAt(i);
+            child.setOnClickListener(v -> {
+                Resources resources = getContext().getResources();
+                colorId = resources.getIdentifier(String.valueOf(v.getTag()), "color", getContext().getPackageName());
+                pin_drop_view.setColorFilter(ContextCompat.getColor(getContext(), colorId));
+            });
+        }
+
+        // create the popup window
+        int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+        int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+        final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            popupWindow.setElevation(20);
+        }
+        // show the popup window
+        popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
+    }
+
     //Gets Image from the gallery and sets it to the map image
     private final ActivityResultLauncher<String> mGetImageContent = registerForActivityResult(
             new ActivityResultContracts.GetContent(),
@@ -282,6 +316,7 @@ public class MapEditorFragment extends Fragment {
         editor.putStringSet("Pins", newSet);
         editor.putInt(pin_id+"_marginStart", (int) event.getX()-60);
         editor.putInt(pin_id+"_marginTop", (int) event.getY()-60);
+        editor.putInt(pin_id+"_color", colorId);
         editor.putString(pin_id+"_Title", "Title");
         editor.putString(pin_id+"_Description", "Description");
         editor.putString(pin_id+"_Image_Name", String.valueOf(pin_drop_view.getTag()));
@@ -307,9 +342,7 @@ public class MapEditorFragment extends Fragment {
             String pin_img_name = map_pref.getString(pin+"_Image_Name", "pin_place");
             int resourceId = resources.getIdentifier(pin_img_name, "drawable", getContext().getPackageName());
             newPin.setImageResource(resourceId);
-            Log.d("TAG", "loadPins: "+R.drawable.pin_atm);
-            Log.d("TAG", "loadPins: "+resourceId);
-            newPin.setColorFilter(ContextCompat.getColor(getContext(), R.color.blue));
+            newPin.setColorFilter(ContextCompat.getColor(getContext(), map_pref.getInt(pin+"_color", colorId)));
             newPin.setTag(pin);
             newPin.setElevation(10);
 
