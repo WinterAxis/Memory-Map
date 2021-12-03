@@ -7,6 +7,8 @@ import android.content.ClipDescription;
 import android.os.Bundle;
 
 import android.app.Activity;
+import android.util.Log;
+
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.navigation.NavController;
 import androidx.navigation.Navigation;
@@ -25,9 +27,12 @@ public class MainActivity extends AppCompatActivity {
         //set up some pref files
         // Save values in map_pref.xml
         SharedPreferences namedSharedPref = getSharedPreferences("maps_pref", Context.MODE_PRIVATE);
-        SharedPreferences.Editor editor = namedSharedPref.edit();
-        editor.putInt("Next_Map_Id", 1);
-        editor.apply();
+        if (namedSharedPref.getInt("Next_Map_Id", 0) == 0) {
+            SharedPreferences.Editor editor = namedSharedPref.edit();
+            Log.d("TAG", "onCreate: asdfasdf ");
+            editor.putInt("Next_Map_Id", 1);
+            editor.apply();
+        }
 
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()

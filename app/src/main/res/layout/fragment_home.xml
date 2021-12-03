@@ -10,9 +10,11 @@
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/MemoryMapBackground"
-        tools:layout_editor_absoluteX="-16dp"
-        tools:layout_editor_absoluteY="0dp" />
+        android:src="@drawable/memory_map_background"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"  />
 
 
 
@@ -26,9 +28,10 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        android:background="@color/teal_200"
-        android:layout_marginTop="50dp"
-        android:textSize="40sp"/>
+        android:background="@color/purple_200"
+        android:layout_marginTop="0dp"
+        android:textSize="40sp"
+        android:gravity="center_horizontal" />
 
     <ImageView
         android:id="@+id/NewMapBackground"
@@ -39,7 +42,7 @@
         android:layout_marginTop="44dp"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/welcome"
-        app:srcCompat="@drawable/BlankMap" />
+        app:srcCompat="@drawable/blank_map" />
 
     <ImageView
         android:id="@+id/LoadMapBackground"
@@ -48,7 +51,7 @@
         android:layout_marginStart="40dp"
         android:layout_marginLeft="40dp"
         android:layout_marginTop="44dp"
-        app:srcCompat="@drawable/BlankMap"
+        app:srcCompat="@drawable/blank_map"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/NewMapBackground" />
 
