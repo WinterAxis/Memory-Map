@@ -9,7 +9,16 @@
         android:id="@+id/map_item"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        tools:text="map">
+        tools:text="map"
+        android:layout_marginStart="75dp"
+        android:layout_marginLeft="75dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginBottom="20dp"
+        android:layout_marginEnd="75dp"
+        android:layout_marginRight="75dp"
+        android:textSize="20sp">
     </TextView>
+
+
 
 </LinearLayout>

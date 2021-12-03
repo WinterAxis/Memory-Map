@@ -1,5 +1,8 @@
 package com.zybooks.memorymap;
 
+import android.content.ClipData;
+import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -7,21 +10,29 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 
 public class MapListFragment extends Fragment {
 
     private List<String> mMaps_temp;
+    private SharedPreferences maps_pref;
+    private ViewGroup parentLayout;
 
     public MapListFragment() {
         // Required empty public constructor
@@ -32,7 +43,17 @@ public class MapListFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mMaps_temp = new ArrayList<>();
         mMaps_temp.add("Map_1");
-        mMaps_temp.add("test2");
+        mMaps_temp.add("Map_2");
+
+        //causes the app to crash and idk why
+        /*Set<String> maps = maps_pref.getStringSet("Maps", null);
+        for (String pin : maps) {
+            parentLayout.removeView(parentLayout.findViewWithTag(pin));
+        }
+        for (String map : maps) {
+            String map_name = maps_pref.getString(map + "_name", "map_name");
+            mMaps_temp.add(map_name);
+        }*/
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
@@ -55,9 +76,13 @@ public class MapListFragment extends Fragment {
         RecyclerView recyclerView = rootView.findViewById(R.id.band_list);
 
         recyclerView.setAdapter(new MapAdapter(mMaps_temp, onClickListener));
+        DividerItemDecoration divider = new DividerItemDecoration(recyclerView.getContext(),
+                DividerItemDecoration.VERTICAL);
+        recyclerView.addItemDecoration(divider);
 
         return rootView;
     }
+
 
     private class MapAdapter extends RecyclerView.Adapter<MapHolder> {
 
