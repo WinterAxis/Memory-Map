@@ -10,7 +10,10 @@
         android:id="@+id/background_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:src="@drawable/map_editor_icon"/>
+        android:src="@drawable/MemoryMapBackground"
+        tools:layout_editor_absoluteX="-16dp"
+        tools:layout_editor_absoluteY="0dp" />
+
 
 
     <TextView
@@ -18,6 +21,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Welcome to Memory Map!"
+        android:textStyle="bold"
+        android:textAlignment="center"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
         app:layout_constraintTop_toTopOf="parent"
@@ -25,30 +30,48 @@
         android:layout_marginTop="50dp"
         android:textSize="40sp"/>
 
+    <ImageView
+        android:id="@+id/NewMapBackground"
+        android:layout_width="328dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="44dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/welcome"
+        app:srcCompat="@drawable/BlankMap" />
+
+    <ImageView
+        android:id="@+id/LoadMapBackground"
+        android:layout_width="328dp"
+        android:layout_height="200dp"
+        android:layout_marginStart="40dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="44dp"
+        app:srcCompat="@drawable/BlankMap"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/NewMapBackground" />
+
     <Button
         android:id="@+id/new_map_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="75dp"
-        android:layout_marginLeft="75dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="75dp"
-        android:layout_marginRight="75dp"
         android:text="Begin a New Map"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/welcome" />
+        app:layout_constraintBottom_toBottomOf="@+id/NewMapBackground"
+        app:layout_constraintEnd_toEndOf="@+id/NewMapBackground"
+        app:layout_constraintStart_toStartOf="@+id/NewMapBackground"
+        app:layout_constraintTop_toTopOf="@+id/NewMapBackground" />
 
     <Button
         android:id="@+id/list_map_button"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Load A Saved Map"
-        app:layout_constraintTop_toBottomOf="@id/new_map_button"
-        android:layout_marginStart="75dp"
-        android:layout_marginLeft="75dp"
-        android:layout_marginTop="100dp"
-        android:layout_marginEnd="75dp"
-        android:layout_marginRight="75dp"/>
+        app:layout_constraintBottom_toBottomOf="@id/LoadMapBackground"
+        app:layout_constraintEnd_toEndOf="@+id/LoadMapBackground"
+        app:layout_constraintStart_toStartOf="@+id/LoadMapBackground"
+        app:layout_constraintTop_toTopOf="@+id/LoadMapBackground" />
+
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
