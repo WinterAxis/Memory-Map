@@ -1,64 +1,108 @@
 package com.zybooks.memorymap;
 
+import android.os.Build;
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
+import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link MapListFragment#newInstance} factory method to
- * create an instance of this fragment.
- */
+import java.util.ArrayList;
+import java.util.List;
+
+
 public class MapListFragment extends Fragment {
 
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private List<String> mMaps_temp;
 
     public MapListFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MapListFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MapListFragment newInstance(String param1, String param2) {
-        MapListFragment fragment = new MapListFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+        mMaps_temp = new ArrayList<>();
+        mMaps_temp.add("Map_1");
+        mMaps_temp.add("test2");
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.P)
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        View rootView = inflater.inflate(R.layout.fragment_map_list, container, false);
+
+        // Click listener for the RecyclerView
+        View.OnClickListener onClickListener = itemView -> {
+
+            Bundle args = new Bundle();
+            args.putString(MapEditorFragment.ARG_MAP_ID, (String) itemView.getTag());
+
+            Navigation.findNavController(itemView).navigate(R.id.navigation_map_editor, args);
+
+            Log.d("TAG", "onCreateView: Thing clicked "+itemView.getTag());
+        };
+
+        // Send bands to RecyclerView
+        RecyclerView recyclerView = rootView.findViewById(R.id.band_list);
+
+        recyclerView.setAdapter(new MapAdapter(mMaps_temp, onClickListener));
+
+        return rootView;
+    }
+
+    private class MapAdapter extends RecyclerView.Adapter<MapHolder> {
+
+        private final List<String> mMaps;
+        private final View.OnClickListener mOnClickListener;
+
+        public MapAdapter(List<String> maps, View.OnClickListener onClickListener) {
+            mMaps = maps;
+            mOnClickListener = onClickListener;
+        }
+
+        @NonNull
+        @Override
+        public MapHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            return new MapHolder(layoutInflater, parent);
+        }
+
+        @Override
+        public void onBindViewHolder(MapHolder holder, int position) {
+            String map_id = mMaps.get(position);
+            holder.bind(map_id);
+            holder.itemView.setTag(map_id);
+            holder.itemView.setOnClickListener(mOnClickListener);
+        }
+
+        @Override
+        public int getItemCount() {
+            return mMaps.size();
         }
     }
 
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_list, container, false);
+    private static class MapHolder extends RecyclerView.ViewHolder {
+
+        private final TextView mNameTextView;
+
+        public MapHolder(LayoutInflater inflater, ViewGroup parent) {
+            super(inflater.inflate(R.layout.list_item_map, parent, false));
+            mNameTextView = itemView.findViewById(R.id.map_item);
+        }
+
+        public void bind(String map_id) {
+            //Update for actual name
+            mNameTextView.setText(map_id);
+        }
     }
+
 }
