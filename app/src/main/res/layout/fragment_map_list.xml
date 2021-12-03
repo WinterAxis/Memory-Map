@@ -20,7 +20,6 @@
         android:layout_marginRight="75dp"/>
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerView"
         android:layout_width="221dp"
         android:layout_height="407dp"
         android:layout_marginStart="75dp"
