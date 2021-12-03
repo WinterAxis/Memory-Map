@@ -55,7 +55,8 @@ public class HomeFragment extends Fragment {
             Log.d("Event", "listMapBtn: clicked?");
             Navigation.findNavController(v).navigate(R.id.navigation_map_list);
         });
-
+        Button deleteMaps = parentView.findViewById(R.id.deleteButton);
+        deleteMaps.setOnClickListener(v -> delete());
         return parentView;
     }
 
@@ -77,6 +78,10 @@ public class HomeFragment extends Fragment {
         args.putString(MapEditorFragment.ARG_MAP_ID, "Map_"+mapNum);
 
         Navigation.findNavController(view).navigate(R.id.navigation_map_editor, args);
+    }
+
+    private void delete(){
+
     }
 
 }
