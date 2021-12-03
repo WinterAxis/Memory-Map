@@ -65,12 +65,14 @@ public class HomeFragment extends Fragment {
         int mapNum = maps_pref.getInt("Next_Map_Id", 1);
         String map_id = "Map_"+mapNum;
         SharedPreferences.Editor editor = maps_pref.edit();
+        int increase = mapNum + 1;
         //Name To Be Changed Later
         Set<String> newSet = new HashSet<String>(maps_pref.getStringSet("Maps", new HashSet<String>()));
         newSet.add(map_id);
         editor.putStringSet("Maps", newSet);
-        editor.putString(map_id, "Map_1");
-        editor.putString(map_id+".xml", "Map_1.xml");
+        editor.putString(map_id+"_name", "Map_1");
+        editor.putString(map_id+"_file", map_id+".xml");
+        editor.putInt("Next_Map_Id", increase);
         editor.apply();
 
         Bundle args = new Bundle();
@@ -81,7 +83,10 @@ public class HomeFragment extends Fragment {
     }
 
     private void delete(){
-
+        SharedPreferences.Editor editor = maps_pref.edit();
+        editor.clear();
+        editor.putInt("Next_Map_Id", 1);
+        editor.apply();
     }
 
 }
