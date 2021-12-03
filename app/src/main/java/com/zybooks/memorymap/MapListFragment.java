@@ -1,12 +1,18 @@
 package com.zybooks.memorymap;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import java.util.ArrayList;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -19,10 +25,12 @@ public class MapListFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+    private SharedPreferences maps_pref;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+    private ArrayList<String> mName = new ArrayList<>();
 
     public MapListFragment() {
         // Required empty public constructor
@@ -46,6 +54,7 @@ public class MapListFragment extends Fragment {
         return fragment;
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,12 +62,30 @@ public class MapListFragment extends Fragment {
             mParam1 = getArguments().getString(ARG_PARAM1);
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
+        maps_pref = getContext().getSharedPreferences("maps_pref", Context.MODE_PRIVATE);
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_map_list, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_map_list, container, false);
+        return rootView;
     }
+
+    private void initImageBitmaps(){
+        int total = maps_pref.getInt("Next_Map_Id", 0);
+        String addMap;
+        for(int i = 0; i<= total; i++){
+           addMap = maps_pref.getString("Map_"+ i, "");
+            mName.add(addMap);
+        }
+        //initRecyclerView();
+    }
+
+   // private void initRecyclerView(){
+    //    RecyclerView recyclerView = findViewById(R.id.select);
+   //     RecyclerViewAdapter adapter = new RecyclerViewAdapter(mName, this);
+    //    recyclerView.setAdapter(adapter);
+    //    recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    //}
 }

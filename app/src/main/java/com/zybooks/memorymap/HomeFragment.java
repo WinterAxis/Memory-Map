@@ -17,6 +17,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import java.util.HashSet;
+import java.util.Set;
+
 
 @RequiresApi(api = Build.VERSION_CODES.P)
 public class HomeFragment extends Fragment {
@@ -58,16 +61,20 @@ public class HomeFragment extends Fragment {
 
     private void newMap(View view) {
         Log.d("Event", "newMap: Here");
-        int Map_Id = maps_pref.getInt("Next_Map_Id", 0);
+        int mapNum = maps_pref.getInt("Next_Map_Id", 1);
+        String map_id = "Map_"+mapNum;
         SharedPreferences.Editor editor = maps_pref.edit();
-        //Name To Be Changed Latter
-        editor.putString("Map_"+Map_Id+"_Name", "Unnamed_Map");
-        editor.putInt("Next_Map_Id", Map_Id+1);
+        //Name To Be Changed Later
+        Set<String> newSet = new HashSet<String>(maps_pref.getStringSet("Maps", new HashSet<String>()));
+        newSet.add(map_id);
+        editor.putStringSet("Maps", newSet);
+        editor.putString(map_id, "Map_1");
+        editor.putString(map_id+".xml", "Map_1.xml");
         editor.apply();
 
         Bundle args = new Bundle();
-        Log.d("TAG", "newMap: "+Map_Id);
-        args.putString(MapEditorFragment.ARG_MAP_ID, "Map_"+Map_Id);
+        Log.d("TAG", "newMap: "+mapNum);
+        args.putString(MapEditorFragment.ARG_MAP_ID, "Map_"+mapNum);
 
         Navigation.findNavController(view).navigate(R.id.navigation_map_editor, args);
     }
