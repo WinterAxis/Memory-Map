@@ -69,8 +69,7 @@ public class HomeFragment extends Fragment {
         Set<String> newSet = new HashSet<String>(maps_pref.getStringSet("Maps", new HashSet<String>()));
         newSet.add(map_id);
         editor.putStringSet("Maps", newSet);
-        editor.putString(map_id+"_name", "Map_1");
-        editor.putString(map_id+"_file", map_id+".xml");
+        editor.putString(map_id+"_name", "Unnamed");
         editor.putInt("Next_Map_Id", increase);
         editor.apply();
 
