@@ -25,7 +25,9 @@ public class MapListFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
+
     private SharedPreferences maps_pref;
+    private View rootView;
 
     // TODO: Rename and change types of parameters
     private String mParam1;
@@ -82,10 +84,10 @@ public class MapListFragment extends Fragment {
         //initRecyclerView();
     }
 
-   // private void initRecyclerView(){
-    //    RecyclerView recyclerView = findViewById(R.id.select);
-   //     RecyclerViewAdapter adapter = new RecyclerViewAdapter(mName, this);
-    //    recyclerView.setAdapter(adapter);
-    //    recyclerView.setLayoutManager(new LinearLayoutManager(this));
-    //}
+    private void initRecyclerView(){
+        RecyclerView recyclerView = rootView.findViewById(R.id.recyclerView);
+        RecyclerViewAdapter adapter = new RecyclerViewAdapter(mName, getContext());
+        recyclerView.setAdapter(adapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+    }
 }
