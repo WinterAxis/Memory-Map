@@ -11,7 +11,6 @@ import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.navigation.Navigation;
 
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -47,12 +46,10 @@ public class HomeFragment extends Fragment {
         View parentView = inflater.inflate(R.layout.fragment_home, container, false);
 
         Button newMapBtn = parentView.findViewById(R.id.new_map_button);
-        Log.d("Event", "newMapBtn: found?"+newMapBtn);
         newMapBtn.setOnClickListener(v -> newMap(v));
 
         Button listMapBtn = parentView.findViewById(R.id.list_map_button);
         listMapBtn.setOnClickListener(v -> {
-            Log.d("Event", "listMapBtn: clicked?");
             Navigation.findNavController(v).navigate(R.id.navigation_map_list);
         });
 
@@ -60,7 +57,6 @@ public class HomeFragment extends Fragment {
     }
 
     private void newMap(View view) {
-        Log.d("Event", "newMap: Here");
         int mapNum = maps_pref.getInt("Next_Map_Id", 1);
         String map_id = "Map_"+mapNum;
         SharedPreferences.Editor editor = maps_pref.edit();
@@ -74,7 +70,6 @@ public class HomeFragment extends Fragment {
         editor.apply();
 
         Bundle args = new Bundle();
-        Log.d("TAG", "newMap: "+mapNum);
         args.putString(MapEditorFragment.ARG_MAP_ID, "Map_"+mapNum);
 
         Navigation.findNavController(view).navigate(R.id.navigation_map_editor, args);

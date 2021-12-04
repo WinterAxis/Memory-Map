@@ -20,7 +20,6 @@ import androidx.fragment.app.Fragment;
 
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.DragEvent;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -30,10 +29,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.GridLayout;
-import android.widget.GridView;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.PopupWindow;
@@ -104,7 +101,6 @@ public class MapEditorFragment extends Fragment {
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        Log.d("TAG", "onCreateOptionsMenu: ");
         inflater.inflate(R.menu.appbar_menu, menu);
         LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService (getContext().LAYOUT_INFLATER_SERVICE);
         View sampleActionView = layoutInflater.inflate(R.layout.sample_action_view, null);
@@ -143,7 +139,6 @@ public class MapEditorFragment extends Fragment {
     }
 
     public void onClickPinPopup(View view) {
-        Log.d("TAG", "onClickPinPopup: "+view.getTag());
         String pin = (String) view.getTag();
 
         // inflate the layout of the popup window
@@ -194,7 +189,6 @@ public class MapEditorFragment extends Fragment {
         GridLayout popupView = (GridLayout) inflater.inflate(R.layout.icon_popup_window, null);
 
         // set onClick Listeners
-        Log.d("TAG", "showIconPopup: "+popupView.getChildCount());
         for(int i = 0; i < popupView.getChildCount(); i++) {
             ImageView child = (ImageView) popupView.getChildAt(i);
             child.setOnClickListener(v -> {
@@ -202,10 +196,7 @@ public class MapEditorFragment extends Fragment {
                 int resourceId = resources.getIdentifier(String.valueOf(v.getTag()), "drawable", getContext().getPackageName());
                 pin_drop_view.setImageResource(resourceId);
                 pin_drop_view.setTag(v.getTag());
-                Log.d("TAG", "showIconPopup: "+v.getTag());
             });
-            Log.d("TAG", "showIconPopup: ");
-            // do stuff with child view
         }
 
         // create the popup window
@@ -276,7 +267,6 @@ public class MapEditorFragment extends Fragment {
                 View.DragShadowBuilder shadowBuilder = new View.DragShadowBuilder(
                         view);
                 view.startDrag(data, shadowBuilder, view, 0);
-//                view.setVisibility(View.INVISIBLE);
                 return true;
             } else {
                 return false;
@@ -310,7 +300,6 @@ public class MapEditorFragment extends Fragment {
         editor.putString(pin_id+"_Title", "");
         editor.putString(pin_id+"_Description", "");
         editor.putString(pin_id+"_Image_Name", String.valueOf(pin_drop_view.getTag()));
-        Log.d("TAG", "addPin: "+pin_drop_view.getTag());
         editor.apply();
         loadPins();
 
@@ -323,8 +312,6 @@ public class MapEditorFragment extends Fragment {
         }
         ConstraintSet conSet = new ConstraintSet();
         for (String pin : pins){
-
-            Log.d("TAG", "onCreateView: "+pin);
             ImageView newPin = new ImageView(getContext());
             newPin.setId(View.generateViewId());
             //Drawable

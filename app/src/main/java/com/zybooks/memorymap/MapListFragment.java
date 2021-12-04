@@ -1,9 +1,7 @@
 package com.zybooks.memorymap;
 
-import android.content.ClipData;
 import android.content.Context;
 import android.content.SharedPreferences;
-import android.content.res.Resources;
 import android.os.Build;
 import android.os.Bundle;
 
@@ -14,16 +12,16 @@ import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
+import android.text.Editable;
+import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
-import android.view.Menu;
-import android.view.MenuInflater;
-import android.view.MenuItem;
-import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.ImageButton;
-import android.widget.PopupMenu;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.TextView;
 
 import java.io.File;
@@ -68,7 +66,6 @@ public class MapListFragment extends Fragment {
 
             Navigation.findNavController(itemView).navigate(R.id.navigation_map_editor, args);
 
-            Log.d("TAG", "onCreateView: Thing clicked "+itemView.getTag());
         };
 
         // Send bands to RecyclerView
@@ -136,22 +133,21 @@ public class MapListFragment extends Fragment {
         public void bind(String map_id, String map_name) {
             mNameTextView.setText(map_name);
             mDeleteButton.setTag(map_id);
+            mRenameButton.setTag(map_id);
         }
 
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "onClick: " +getAdapterPosition());
             int mapNum = getAdapterPosition() +1;
             if(view == mDeleteButton){
                 deleteMap(view, context);
             }else{
-                changeName(mapNum);
+                changeName(view, context);
             }
 
         }
 
         public void deleteMap(View view, Context context) {
-            Log.d("TAG", "onClick: tried to delete" +view.getTag());
             SharedPreferences maps_pref = context.getSharedPreferences("maps_pref", 0);
             SharedPreferences.Editor editor = maps_pref.edit();
             Set<String> newSet = new HashSet<String>(maps_pref.getStringSet("Maps", new HashSet<String>()));
@@ -165,9 +161,39 @@ public class MapListFragment extends Fragment {
             Navigation.findNavController(view).navigateUp();
         }
 
-        private void changeName(Integer mapNum) {
-            Log.d(TAG, "onClick: tried to rename" +getAdapterPosition());
+        private void changeName(View view, Context context) {
+            SharedPreferences maps_pref = context.getSharedPreferences("maps_pref", 0);
+            String map = (String) view.getTag();
 
+            // inflate the layout of the popup window
+            LayoutInflater inflater = (LayoutInflater) context.getSystemService(context.LAYOUT_INFLATER_SERVICE);
+            View popupView = inflater.inflate(R.layout.name_popup_window, null);
+
+            // set the windows text
+            EditText title = popupView.findViewById(R.id.map_title);
+            title.setText(maps_pref.getString(map+"_name", ""));
+            title.addTextChangedListener(new TextWatcher() {
+                public void afterTextChanged(Editable s) {
+                    SharedPreferences.Editor editor = maps_pref.edit();
+                    editor.putString(map+"_name", String.valueOf(s));
+                    editor.apply();
+                    mNameTextView.setText(s);
+                }
+                public void beforeTextChanged(CharSequence s, int start, int count, int after) { }
+                public void onTextChanged(CharSequence s, int start, int before, int count) { }
+            });
+
+            // create the popup window
+            int width = LinearLayout.LayoutParams.WRAP_CONTENT;
+            int height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            final PopupWindow popupWindow = new PopupWindow(popupView, width, height, true);
+
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                popupWindow.setElevation(20);
+            }
+
+            // show the popup window
+            popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         }
     }
 
