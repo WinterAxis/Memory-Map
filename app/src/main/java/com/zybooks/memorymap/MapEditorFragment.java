@@ -84,7 +84,7 @@ public class MapEditorFragment extends Fragment {
         map_image_view.setOnDragListener(new MyDragListener());
 
         SharedPreferences.Editor editor = map_pref.edit();
-        if (map_pref.getInt("Next_Pin_Id", 0) == 0) {
+        if (!map_pref.contains("Next_Pin_Id")) {
             editor.putInt("Next_Pin_Id", 1);
             Set<String> set = new HashSet<String>();
             editor.putStringSet("Pins", set);
@@ -152,7 +152,7 @@ public class MapEditorFragment extends Fragment {
 
         // set the windows text
         EditText title = popupView.findViewById(R.id.pin_title);
-        title.setText(map_pref.getString(pin+"_Title", "Title"));
+        title.setText(map_pref.getString(pin+"_Title", ""));
         title.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 SharedPreferences.Editor editor = map_pref.edit();
@@ -164,7 +164,7 @@ public class MapEditorFragment extends Fragment {
         });
 
         EditText dis = popupView.findViewById(R.id.pin_description);
-        dis.setText(map_pref.getString(pin+"_Description", "Description"));
+        dis.setText(map_pref.getString(pin+"_Description", ""));
         dis.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
                 SharedPreferences.Editor editor = map_pref.edit();
@@ -186,14 +186,6 @@ public class MapEditorFragment extends Fragment {
 
         // show the popup window
         popupWindow.showAtLocation(getView(), Gravity.CENTER, 0, 0);
-        // dismiss the popup window when touched
-//        popupView.setOnTouchListener(new View.OnTouchListener() {
-//            @Override
-//            public boolean onTouch(View v, MotionEvent event) {
-//                popupWindow.dismiss();
-//                return true;
-//            }
-//        });
     }
 
     public void showIconPopup() {
@@ -298,8 +290,6 @@ public class MapEditorFragment extends Fragment {
         public boolean onDrag(View v, DragEvent event) {
             int action = event.getAction();
             if (event.getAction() == DragEvent.ACTION_DROP) {
-                Log.d("TAG", "onDrag: Dropped" + event.getX());
-                Log.d("TAG", "onDrag: Dropped" + event.getY());
                 addPin(event);
             }
             return true;
@@ -317,8 +307,8 @@ public class MapEditorFragment extends Fragment {
         editor.putInt(pin_id+"_marginStart", (int) event.getX()-60);
         editor.putInt(pin_id+"_marginTop", (int) event.getY()-60);
         editor.putInt(pin_id+"_color", colorId);
-        editor.putString(pin_id+"_Title", "Title");
-        editor.putString(pin_id+"_Description", "Description");
+        editor.putString(pin_id+"_Title", "");
+        editor.putString(pin_id+"_Description", "");
         editor.putString(pin_id+"_Image_Name", String.valueOf(pin_drop_view.getTag()));
         Log.d("TAG", "addPin: "+pin_drop_view.getTag());
         editor.apply();
