@@ -21,6 +21,8 @@ import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
+import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -115,19 +117,42 @@ public class MapListFragment extends Fragment {
         }
     }
 
-    private static class MapHolder extends RecyclerView.ViewHolder {
+    private static class MapHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
+        private static final String TAG = "MyViewHolder";
         private final TextView mNameTextView;
-
+        private final ImageButton mDeleteButton;
+        private SharedPreferences maps_pref;
         public MapHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_map, parent, false));
             mNameTextView = itemView.findViewById(R.id.map_item);
+            mDeleteButton = itemView.findViewById(R.id.deleteMap);
+            mDeleteButton.setOnClickListener(this);
         }
 
         public void bind(String map_id) {
             //Update for actual name
             mNameTextView.setText(map_id);
         }
+
+        @Override
+        public void onClick(View view) {
+            Log.d(TAG, "onClick: " +getAdapterPosition());
+            deleteMap(view);
+        }
+
+        private void deleteMap(View view) {
+            Log.d(TAG, "onClick: tried to delete" +getAdapterPosition());
+            //SharedPreferences.Editor editor = maps_pref.edit();
+            //int currentMap = (getAdapterPosition()+1);
+            //editor.remove("Map_"+currentMap+"_name");
+            //editor.remove("Map_"+currentMap+"_file");
+            //editor.apply();
+            //need to remove from set
+            //editor.remove(maps_pref.Maps.remove(currentMap));
+        }
+
+
     }
 
 }

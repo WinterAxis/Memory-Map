@@ -26,9 +26,10 @@ public class MainActivity extends AppCompatActivity {
         // Save values in map_pref.xml
         SharedPreferences namedSharedPref = getSharedPreferences("maps_pref", Context.MODE_PRIVATE);
         SharedPreferences.Editor editor = namedSharedPref.edit();
-        editor.putInt("Next_Map_Id", 1);
-        editor.apply();
-
+        if(!namedSharedPref.contains("Next_Map_Id")){
+            editor.putInt("Next_Map_Id", 1);
+            editor.apply();
+        }
 
         NavHostFragment navHostFragment = (NavHostFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.nav_host_fragment);
