@@ -26,13 +26,14 @@ import android.widget.PopupMenu;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 
 public class MapListFragment extends Fragment {
 
-    private List<String> mMaps_temp;
+    private List<String> mMaps_List;
     private SharedPreferences maps_pref;
     private ViewGroup parentLayout;
 
@@ -43,25 +44,19 @@ public class MapListFragment extends Fragment {
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mMaps_temp = new ArrayList<>();
-        mMaps_temp.add("Map_1");
-        mMaps_temp.add("Map_2");
-
-        //causes the app to crash and idk why
-        /*Set<String> maps = maps_pref.getStringSet("Maps", null);
-        for (String pin : maps) {
-            parentLayout.removeView(parentLayout.findViewWithTag(pin));
-        }
-        for (String map : maps) {
-            String map_name = maps_pref.getString(map + "_name", "map_name");
-            mMaps_temp.add(map_name);
-        }*/
+        maps_pref = getContext().getSharedPreferences("maps_pref", 0);
     }
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_map_list, container, false);
+
+        mMaps_List = new ArrayList<>();
+        Set<String> maps = maps_pref.getStringSet("Maps", new HashSet<>());
+        for (String map : maps) {
+            mMaps_List.add(map);
+        }
 
         // Click listener for the RecyclerView
         View.OnClickListener onClickListener = itemView -> {
@@ -77,7 +72,7 @@ public class MapListFragment extends Fragment {
         // Send bands to RecyclerView
         RecyclerView recyclerView = rootView.findViewById(R.id.band_list);
 
-        recyclerView.setAdapter(new MapAdapter(mMaps_temp, onClickListener));
+        recyclerView.setAdapter(new MapAdapter(mMaps_List, onClickListener));
         DividerItemDecoration divider = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(divider);
@@ -106,7 +101,7 @@ public class MapListFragment extends Fragment {
         @Override
         public void onBindViewHolder(MapHolder holder, int position) {
             String map_id = mMaps.get(position);
-            holder.bind(map_id);
+            holder.bind(maps_pref.getString(map_id+"_name", "Unnamed"));
             holder.itemView.setTag(map_id);
             holder.itemView.setOnClickListener(mOnClickListener);
         }
@@ -130,9 +125,8 @@ public class MapListFragment extends Fragment {
             mDeleteButton.setOnClickListener(this);
         }
 
-        public void bind(String map_id) {
-            //Update for actual name
-            mNameTextView.setText(map_id);
+        public void bind(String map_name) {
+            mNameTextView.setText(map_name);
         }
 
         @Override
