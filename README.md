@@ -21,6 +21,42 @@ view all of the maps, change the name of them, and even delete them.</p>
 - XML
 - Android Studio
 
+## Java Files:
+
+-MainActivity: 
+
+-HomeFragment:  
+
+-MapEditorFragment:
+
+-MapListFragment:
+
+## Layout Files:
+
+-activity_main: contains the design code associated with the home page. Has two buttons that when clicked will navigate to other pages. 
+
+-color_popup_window: pops up when the color selection tool is clicked on the map edit page. Contains twelve ImageViews.
+
+-fragment_map_editor: contains the design code associated with the edit page. The page is an image view for a map to be inserted. 
+
+-icon_popup_window: pops up when the icon selection tool is clicked on the map edit page. Contains twelve ImageViews. 
+
+-list_item_map: the design layout for the elements that are displayed in the RecycleView. Contains a TextView and two ImageButtons. 
+
+-name_popup_window: pops up when the change name button is pressed on the list page. Contains an EditText. 
+
+-pin_popup_window: pops up once a pin has been placed and then clicked. Contains two EditTexts. 
+
+-sample_action_view: an ImageView template for the action bar. 
+
+## Menu Files:
+
+-appbar_menu: the app bar that appears on the edit map page. Contains three buttons that have the functions of changing the shape of the pin, changing the color of the pin, and a pin that can be dragged onto the map. 
+
+## Navigation Files:
+
+-nav_graph: is the navigation functionality between the pages. 
+
 ## Future Updates
 
 - [ ] New ways to implement map images.
