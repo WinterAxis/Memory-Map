@@ -117,12 +117,15 @@ public class MapListFragment extends Fragment {
         private static final String TAG = "MyViewHolder";
         private final TextView mNameTextView;
         private final ImageButton mDeleteButton;
+        private final ImageButton mRenameButton;
         private SharedPreferences maps_pref;
         public MapHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_map, parent, false));
             mNameTextView = itemView.findViewById(R.id.map_item);
             mDeleteButton = itemView.findViewById(R.id.deleteMap);
+            mRenameButton = itemView.findViewById(R.id.renameMap);
             mDeleteButton.setOnClickListener(this);
+            mRenameButton.setOnClickListener(this);
         }
 
         public void bind(String map_name) {
@@ -132,21 +135,24 @@ public class MapListFragment extends Fragment {
         @Override
         public void onClick(View view) {
             Log.d(TAG, "onClick: " +getAdapterPosition());
-            deleteMap(view);
+            int mapNum = getAdapterPosition() +1;
+            if(view == mDeleteButton){
+                deleteMap(mapNum);
+            }else{
+                changeName(mapNum);
+            }
+
         }
 
-        private void deleteMap(View view) {
+        private void deleteMap(Integer mapNum) {
             Log.d(TAG, "onClick: tried to delete" +getAdapterPosition());
-            //SharedPreferences.Editor editor = maps_pref.edit();
-            //int currentMap = (getAdapterPosition()+1);
-            //editor.remove("Map_"+currentMap+"_name");
-            //editor.remove("Map_"+currentMap+"_file");
-            //editor.apply();
-            //need to remove from set
-            //editor.remove(maps_pref.Maps.remove(currentMap));
+
         }
 
+        private void changeName(Integer mapNum) {
+            Log.d(TAG, "onClick: tried to rename" +getAdapterPosition());
 
+        }
     }
 
 }
