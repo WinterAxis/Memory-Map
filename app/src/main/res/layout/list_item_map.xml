@@ -16,7 +16,7 @@
         android:layout_marginRight="100dp"
         android:layout_marginBottom="20dp"
         android:textSize="20sp"
-        tools:text="map"></TextView>
+        tools:text="map"/>
 
     <ImageButton
         android:id="@+id/renameMap"
