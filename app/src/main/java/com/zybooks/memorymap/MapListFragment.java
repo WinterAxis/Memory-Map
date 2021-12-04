@@ -1,6 +1,8 @@
 package com.zybooks.memorymap;
 
 import android.content.ClipData;
+import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.os.Build;
@@ -25,6 +27,7 @@ import android.widget.ImageButton;
 import android.widget.PopupMenu;
 import android.widget.TextView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -70,7 +73,7 @@ public class MapListFragment extends Fragment {
         };
 
         // Send bands to RecyclerView
-        RecyclerView recyclerView = rootView.findViewById(R.id.band_list);
+        RecyclerView recyclerView = rootView.findViewById(R.id.map_list);
 
         recyclerView.setAdapter(new MapAdapter(mMaps_List, onClickListener));
         DividerItemDecoration divider = new DividerItemDecoration(recyclerView.getContext(),
@@ -80,6 +83,10 @@ public class MapListFragment extends Fragment {
         return rootView;
     }
 
+    public static void refreshView()
+    {
+
+    }
 
     private class MapAdapter extends RecyclerView.Adapter<MapHolder> {
 
@@ -101,9 +108,11 @@ public class MapListFragment extends Fragment {
         @Override
         public void onBindViewHolder(MapHolder holder, int position) {
             String map_id = mMaps.get(position);
-            holder.bind(maps_pref.getString(map_id+"_name", "Unnamed"));
+            Log.d("TAG", "onBindViewHolder: "+map_id);
+            holder.bind(map_id, maps_pref.getString(map_id+"_name", "Unnamed"));
             holder.itemView.setTag(map_id);
             holder.itemView.setOnClickListener(mOnClickListener);
+            holder.context = getContext();
         }
 
         @Override
@@ -117,7 +126,8 @@ public class MapListFragment extends Fragment {
         private static final String TAG = "MyViewHolder";
         private final TextView mNameTextView;
         private final ImageButton mDeleteButton;
-        private SharedPreferences maps_pref;
+        public Context context;
+
         public MapHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_map, parent, false));
             mNameTextView = itemView.findViewById(R.id.map_item);
@@ -125,27 +135,32 @@ public class MapListFragment extends Fragment {
             mDeleteButton.setOnClickListener(this);
         }
 
-        public void bind(String map_name) {
+        public void bind(String map_id, String map_name) {
             mNameTextView.setText(map_name);
+            mDeleteButton.setTag(map_id);
         }
 
         @Override
         public void onClick(View view) {
-            Log.d(TAG, "onClick: " +getAdapterPosition());
-            deleteMap(view);
+            deleteMap(view, context);
         }
 
-        private void deleteMap(View view) {
-            Log.d(TAG, "onClick: tried to delete" +getAdapterPosition());
-            //SharedPreferences.Editor editor = maps_pref.edit();
-            //int currentMap = (getAdapterPosition()+1);
-            //editor.remove("Map_"+currentMap+"_name");
-            //editor.remove("Map_"+currentMap+"_file");
-            //editor.apply();
-            //need to remove from set
-            //editor.remove(maps_pref.Maps.remove(currentMap));
-        }
+        public void deleteMap(View view, Context context) {
+            Log.d("TAG", "onClick: tried to delete" +view.getTag());
+            SharedPreferences maps_pref = context.getSharedPreferences("maps_pref", 0);
+            SharedPreferences.Editor editor = maps_pref.edit();
+            Set<String> newSet = new HashSet<String>(maps_pref.getStringSet("Maps", new HashSet<String>()));
+            newSet.remove(view.getTag());
+            editor.putStringSet("Maps", newSet);
+            editor.remove(view.getTag()+"_name");
+            editor.apply();
 
+            String filePath = context.getFilesDir().getParent()+"/shared_prefs/"+view.getTag()+".xml";
+            File deletePrefFile = new File(filePath );
+            deletePrefFile.delete();
+            Navigation.findNavController(view).navigateUp();
+
+        }
 
     }
 
