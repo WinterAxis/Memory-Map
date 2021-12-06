@@ -124,6 +124,42 @@ MapEditorFragment Methods:
 
 MapListFragment Methods:
 
+    onCreateView:
+    
+        -Inflaters the fragment_map_list layout.
+
+        -Creates a list of the map in the set stored in the shared prefaces file.
+
+        -Sets up the onClickListener used for the recycler view.
+
+        -Sets up the recyclerview using the map adapter.
+
+    private class MapAdapter:
+    
+        -MapAdapter extends RecyclerView.Adapter<MapHolder> and uses a list of strings of the map_ids
+
+        -It sets tags, onClicks and passes the contexts to the MapHolder
+
+    private class MapHolder:
+    
+        -MapHolder extends RecyclerView.ViewHolder
+
+        -Inflates the list_item_map layout 
+
+        -Sets up the individual views used in the recycler view
+
+        -deleteMap:
+        
+            -Removes the map from the shared preference set and deletes its associated preference file. Then navigates up to the homefragment
+            
+        -changeName:
+        
+            -Uses the tag attached to the view to get the map name shared preference file.
+            
+            -Creates a popup window using the name_popup_window layout with the name of the map.
+            
+            -Sets text change listeners to update the shared preference file.
+
 ## Layout Files
 
 -activity_main: contains the design code associated with the home page. Has two buttons that when clicked will navigate to other pages. 
