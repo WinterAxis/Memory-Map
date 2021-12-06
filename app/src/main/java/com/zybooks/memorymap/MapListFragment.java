@@ -41,17 +41,24 @@ public class MapListFragment extends Fragment {
         // Required empty public constructor
     }
 
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        //grabs all information from our shared preference
         maps_pref = getContext().getSharedPreferences("maps_pref", 0);
     }
+
 
     @RequiresApi(api = Build.VERSION_CODES.P)
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+        //Inflates the fragment_map_list layout
+        //One large view consisting of a recycler view
         View rootView = inflater.inflate(R.layout.fragment_map_list, container, false);
 
+        // List of map names
         mMaps_List = new ArrayList<>();
         Set<String> maps = maps_pref.getStringSet("Maps", new HashSet<>());
         for (String map : maps) {
@@ -64,14 +71,16 @@ public class MapListFragment extends Fragment {
             Bundle args = new Bundle();
             args.putString(MapEditorFragment.ARG_MAP_ID, (String) itemView.getTag());
 
+            //navigate to the corresponding edit view
             Navigation.findNavController(itemView).navigate(R.id.navigation_map_editor, args);
 
         };
 
-        // Send bands to RecyclerView
+        // Send maps to RecyclerView
         RecyclerView recyclerView = rootView.findViewById(R.id.map_list);
-
         recyclerView.setAdapter(new MapAdapter(mMaps_List, onClickListener));
+
+        //add a horizontal line to separate inserted maps
         DividerItemDecoration divider = new DividerItemDecoration(recyclerView.getContext(),
                 DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(divider);
@@ -79,12 +88,13 @@ public class MapListFragment extends Fragment {
         return rootView;
     }
 
-
+    //extends RecyclerView.Adapter
     private class MapAdapter extends RecyclerView.Adapter<MapHolder> {
 
         private final List<String> mMaps;
         private final View.OnClickListener mOnClickListener;
 
+        //takes a list of strings of the map ids (map_id)
         public MapAdapter(List<String> maps, View.OnClickListener onClickListener) {
             mMaps = maps;
             mOnClickListener = onClickListener;
@@ -97,6 +107,7 @@ public class MapListFragment extends Fragment {
             return new MapHolder(layoutInflater, parent);
         }
 
+        //sets tags, onClickListeners, and passes context to the MapHolder
         @Override
         public void onBindViewHolder(MapHolder holder, int position) {
             String map_id = mMaps.get(position);
@@ -112,6 +123,8 @@ public class MapListFragment extends Fragment {
         }
     }
 
+
+    //extends RecyclerView.ViewHolder
     private static class MapHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         private static final String TAG = "MyViewHolder";
@@ -121,6 +134,8 @@ public class MapListFragment extends Fragment {
         private SharedPreferences maps_pref;
         public Context context;
 
+        //inflates the list_item_map
+        //sets up the individual views used in the recycler view
         public MapHolder(LayoutInflater inflater, ViewGroup parent) {
             super(inflater.inflate(R.layout.list_item_map, parent, false));
             mNameTextView = itemView.findViewById(R.id.map_item);
@@ -136,6 +151,7 @@ public class MapListFragment extends Fragment {
             mRenameButton.setTag(map_id);
         }
 
+        //sends to the corresponding method for the clicks
         @Override
         public void onClick(View view) {
             int mapNum = getAdapterPosition() +1;
@@ -147,17 +163,24 @@ public class MapListFragment extends Fragment {
 
         }
 
+
         public void deleteMap(View view, Context context) {
             SharedPreferences maps_pref = context.getSharedPreferences("maps_pref", 0);
             SharedPreferences.Editor editor = maps_pref.edit();
             Set<String> newSet = new HashSet<String>(maps_pref.getStringSet("Maps", new HashSet<String>()));
             newSet.remove(view.getTag());
             editor.putStringSet("Maps", newSet);
+
+            //removes the map from the shared preference set
             editor.remove(view.getTag()+"_name");
             editor.apply();
+
+            //deletes the corresponding preference file
             String filePath = context.getFilesDir().getParent()+"/shared_prefs/"+view.getTag()+".xml";
             File deletePrefFile = new File(filePath );
             deletePrefFile.delete();
+
+            //navigates back to the homeFragment
             Navigation.findNavController(view).navigateUp();
         }
 
@@ -172,6 +195,8 @@ public class MapListFragment extends Fragment {
             // set the windows text
             EditText title = popupView.findViewById(R.id.map_title);
             title.setText(maps_pref.getString(map+"_name", ""));
+
+            //changed text listener
             title.addTextChangedListener(new TextWatcher() {
                 public void afterTextChanged(Editable s) {
                     SharedPreferences.Editor editor = maps_pref.edit();
@@ -192,7 +217,7 @@ public class MapListFragment extends Fragment {
                 popupWindow.setElevation(20);
             }
 
-            // show the popup window
+            // show the popup window in the center
             popupWindow.showAtLocation(view, Gravity.CENTER, 0, 0);
         }
     }
